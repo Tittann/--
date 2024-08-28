@@ -1,0 +1,22 @@
+import logging
+
+
+class Logger:
+    """Класс для логирования."""
+
+    __instance = None
+
+    @staticmethod
+    def get_instance():
+        """Реализация паттерна Singleton."""
+        if Logger.__instance is None:
+            Logger.__instance = Logger()
+        return Logger.__instance
+
+    def _init_(self):
+        """Инициализирует логгер."""
+        logging.basicConfig(filename="calculator.log", level=logging.INFO)
+
+    def log(self, message):
+        """Записывает сообщение в лог."""
+        logging.info(message)
