@@ -1,0 +1,143 @@
+class ComplexNumber:
+                                                                                                """Представляет комплексное число."""
+
+    def __init__(self, real, imag):
+                                                                                                """Инициализирует комплексное число."""
+        self.real = real
+        self.imag = imag
+
+    def __str__(self):
+                                                                                        """Возвращает строковое представление комплексного числа."""
+        if self.imag >= 0:
+            return f"{self.real} + {self.imag}i"
+        else:
+            return f"{self.real} - {-self.imag}i"
+
+    def __add__(self, other):
+                                                                                        """Определяет операцию сложения."""
+        if isinstance(other, ComplexNumber):
+            return ComplexNumber(self.real + other.real, self.imag + other.imag)
+        else:
+            raise TypeError("Операнд должен быть комплексным числом.")
+
+    def __mul__(self, other):
+                                                                                       """Определяет операцию умножения."""
+        if isinstance(other, ComplexNumber):
+            return ComplexNumber(
+                self.real * other.real - self.imag * other.imag,
+                self.real * other.imag + self.imag * other.real,
+            )
+        else:
+            raise TypeError("Операнд должен быть комплексным числом.")
+
+    def __truediv__(self, other):
+                                                                                            """Определяет операцию деления."""
+        if isinstance(other, ComplexNumber):
+            denominator = other.real**2 + other.imag**2
+            return ComplexNumber(
+                (self.real * other.real + self.imag * other.imag) / denominator,
+                (self.imag * other.real - self.real * other.imag) / denominator,
+            )
+        else:
+            raise TypeError("Операнд должен быть комплексным числом.")
+from complex_number import ComplexNumber
+from logger import Logger
+
+
+class Calculator:
+                                                                                        """Класс калькулятора для комплексных чисел."""
+
+    def __init__(self, logger=None):
+                                                                                                """Инициализирует калькулятор."""
+        self.logger = logger or Logger.get_instance()
+
+    def add(self, num1, num2):
+                                                                                                """Сложение комплексных чисел."""
+        self.logger.log(f"Сложение: {num1} + {num2}")
+        return num1 + num2
+
+    def multiply(self, num1, num2):
+                                                                                                """Умножение комплексных чисел."""
+        self.logger.log(f"Умножение: {num1} * {num2}")
+        return num1 * num2
+
+    def divide(self, num1, num2):
+                                                                                                  """Деление комплексных чисел."""
+        self.logger.log(f"Деление: {num1} / {num2}")
+        return num1 / num2
+import logging
+
+
+class Logger:
+                                                                                                   """Класс для логирования."""
+
+    __instance = None
+
+    @staticmethod
+    def get_instance():
+                                                                                                 """Реализация паттерна Singleton."""
+        if Logger.__instance is None:
+            Logger.__instance = Logger()
+        return Logger.__instance
+
+    def __init__(self):
+                                                                                                     """Инициализирует логгер."""
+        logging.basicConfig(filename="calculator.log", level=logging.INFO)
+
+    def log(self, message):
+                                                                                                  """Записывает сообщение в лог."""
+        logging.info(message)
+from calculator import Calculator
+from complex_number import ComplexNumber
+
+
+def get_complex_number():
+                                                                                                """Ввод комплексного числа с консоли."""
+    while True:
+        try:
+            real = float(input("Введите действительную часть: "))
+            imag = float(input("Введите мнимую часть: "))
+            return ComplexNumber(real, imag)
+        except ValueError:
+            print(" ввод некоретин . Попробуйте снова.")
+
+
+def main():
+                                                                                                      """Основная функция программы."""
+    calculator = Calculator()
+
+    while True:
+        print("\nВыберите операцию:")
+        print("1 - Сложение")
+        print("2 - Умножение")
+        print("3 - Деление")
+        print("4 - Конецц")
+
+        choice = input("Введи номер операции: ")
+
+        if choice == "1":
+            num1 = get_complex_number()
+            num2 = get_complex_number()
+            result = calculator.add(num1, num2)
+            print(f"Результат: {result}")
+        elif choice == "2":
+            num1 = get_complex_number()
+            num2 = get_complex_number()
+            result = calculator.multiply(num1, num2)
+            print(f"Результат: {result}")
+        elif choice == "3":
+            num1 = get_complex_number()
+            num2 = get_complex_number()
+            try:
+                result = calculator.divide(num1, num2)
+                print(f"Результат: {result}")
+            except ZeroDivisionError:
+                print("Деление на ноль невозможно.")
+        elif choice == "4":
+            break
+        else:
+            print("Некорректный ввод. Попробуй снова.")
+
+
+if __name__ == "__main__":
+    main()
